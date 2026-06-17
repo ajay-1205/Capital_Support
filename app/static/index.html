@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Capital Support</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f2ec;
+    --cream: #ede9df;
+    --accent: #c84b2f;
+    --accent-pale: #f5e8e4;
+    --muted: #8c8880;
+    --border: #d8d3c8;
+    --success: #2e6b4f;
+    --radius: 4px;
+    --font-serif: 'DM Serif Display', Georgia, serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ─── AUTH SCREEN ─── */
+  #auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .auth-left {
+    width: 420px;
+    flex-shrink: 0;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 48px 44px;
+  }
+
+  .auth-brand {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .auth-tagline {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .auth-quote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--cream);
+    line-height: 1.4;
+    border-left: 2px solid var(--accent);
+    padding-left: 20px;
+    margin-top: auto;
+    margin-bottom: 32px;
+  }
+
+  .auth-footer {
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 0.06em;
+  }
+
+  .auth-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    background: var(--paper);
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .auth-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 36px;
+    border-bottom: 1.5px solid var(--border);
+  }
+
+  .auth-tab {
+    padding: 10px 20px 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    position: relative;
+    transition: color 0.2s;
+  }
+
+  .auth-tab.active {
+    color: var(--ink);
+  }
+
+  .auth-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1.5px;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .field-group {
+    margin-bottom: 20px;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .field-input {
+    width: 100%;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .field-input:focus {
+    border-color: var(--ink);
+  }
+
+  .field-input::placeholder { color: #bbb; }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: var(--radius);
+    padding: 12px 20px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 8px;
+  }
+
+  .btn-primary:hover { background: #2a2820; }
+  .btn-primary:active { transform: scale(0.99); }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .auth-error {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: var(--accent-pale);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  /* ─── APP SHELL ─── */
+  #app-screen {
+    display: none;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  #app-screen.visible {
+    display: flex;
+  }
+
+  .topbar {
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 36px;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-brand {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    letter-spacing: -0.3px;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .topbar-user {
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 0.06em;
+  }
+
+  .btn-ghost {
+    background: none;
+    border: 1px solid #444;
+    border-radius: var(--radius);
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #ccc;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-ghost:hover { border-color: #888; color: white; }
+
+  /* ─── MAIN LAYOUT ─── */
+  .main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 0;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    border-right: 1.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    background: var(--cream);
+    min-height: calc(100vh - 56px);
+  }
+
+  .sidebar-header {
+    padding: 24px 24px 16px;
+    border-bottom: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sidebar-title {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    letter-spacing: -0.2px;
+  }
+
+  .customer-count {
+    font-size: 11px;
+    color: var(--muted);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 10px;
+  }
+
+  .sidebar-search {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-wrap {
+    position: relative;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px 8px 30px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--ink); }
+  .search-input::placeholder { color: #bbb; }
+
+  .customer-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+
+  .customer-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+    position: relative;
+  }
+
+  .customer-item:hover { background: rgba(0,0,0,0.04); }
+
+  .customer-item.active {
+    background: white;
+    border-left-color: var(--accent);
+  }
+
+  .customer-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .customer-item-info { flex: 1; min-width: 0; }
+
+  .customer-item-name {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--ink);
+  }
+
+  .customer-item-meta {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+  }
+
+  .sidebar-add-btn {
+    margin: 16px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: var(--radius);
+    padding: 11px 18px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: calc(100% - 48px);
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .sidebar-add-btn:hover { background: #2a2820; }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--muted);
+  }
+
+  .empty-state-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.4;
+  }
+
+  .empty-state-title {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .empty-state-sub { font-size: 12px; }
+
+  /* ─── DETAIL PANEL ─── */
+  .detail-panel {
+    padding: 40px 52px;
+    overflow-y: auto;
+  }
+
+  .detail-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    text-align: center;
+    gap: 12px;
+  }
+
+  .detail-placeholder-icon {
+    font-size: 48px;
+    opacity: 0.15;
+    margin-bottom: 8px;
+  }
+
+  .detail-placeholder-title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: var(--ink);
+    opacity: 0.35;
+  }
+
+  .detail-placeholder-sub { font-size: 12px; }
+
+  /* ─── CUSTOMER DETAIL ─── */
+  .detail-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 1.5px solid var(--border);
+  }
+
+  .detail-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+
+  .detail-name-wrap { flex: 1; }
+
+  .detail-name {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .detail-since {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .btn-edit {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 7px 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-edit:hover { border-color: var(--ink); background: var(--cream); }
+
+  .btn-delete {
+    background: none;
+    border: 1.5px solid transparent;
+    border-radius: var(--radius);
+    padding: 7px 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--accent);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-delete:hover { border-color: var(--accent); background: var(--accent-pale); }
+
+  .detail-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 32px;
+    margin-bottom: 32px;
+  }
+
+  .detail-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .detail-field-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .detail-field-value {
+    font-size: 14px;
+    color: var(--ink);
+    word-break: break-word;
+  }
+
+  .detail-field-value.empty { color: var(--muted); font-style: italic; font-size: 12px; }
+
+  .detail-notes-section { margin-top: 8px; }
+
+  .detail-notes-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .detail-notes-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .detail-notes-value {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink);
+    white-space: pre-wrap;
+    min-height: 80px;
+  }
+
+  .detail-notes-value.empty {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 12px;
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,14,12,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-overlay.open {
+    display: flex;
+    animation: fadeIn 0.18s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal {
+    background: var(--paper);
+    border-radius: 6px;
+    width: 480px;
+    max-width: 95vw;
+    animation: slideUp 0.2s ease;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    letter-spacing: -0.3px;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: white; }
+
+  .modal-body { padding: 28px; }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .modal-grid .field-group:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .modal-grid .field-group.full {
+    grid-column: 1 / -1;
+  }
+
+  .modal-footer {
+    padding: 0 28px 24px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .btn-cancel {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink);
+    transition: border-color 0.2s;
+  }
+
+  .btn-cancel:hover { border-color: var(--ink); }
+
+  .btn-save {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: var(--radius);
+    padding: 9px 24px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-save:hover { background: #2a2820; }
+  .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ─── TOAST ─── */
+  .toast-container {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toast {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 18px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: toastIn 0.25s ease;
+    max-width: 320px;
+  }
+
+  .toast.success .toast-dot { background: #5cb88a; }
+  .toast.error .toast-dot { background: var(--accent); }
+
+  .toast-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ─── CONFIRM DIALOG ─── */
+  .confirm-modal {
+    width: 360px;
+  }
+
+  .confirm-body {
+    padding: 24px 28px 20px;
+  }
+
+  .confirm-msg {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .confirm-sub { font-size: 12px; color: var(--muted); }
+
+  .confirm-footer {
+    padding: 0 28px 24px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .btn-confirm-delete {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 9px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-confirm-delete:hover { background: #a83a22; }
+
+  /* ─── LOADING ─── */
+  .loading-bar {
+    height: 2px;
+    background: var(--accent);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    z-index: 9998;
+    transition: width 0.3s ease;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  textarea.field-input {
+    resize: vertical;
+    min-height: 90px;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 260px 1fr; }
+    .detail-panel { padding: 28px 32px; }
+  }
+
+  @media (max-width: 680px) {
+    .auth-left { display: none; }
+    .main { grid-template-columns: 1fr; }
+    .sidebar { min-height: unset; max-height: 260px; }
+    .detail-fields { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING BAR -->
+<div class="loading-bar" id="loading-bar"></div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ─── AUTH SCREEN ─── -->
+<div id="auth-screen">
+  <div class="auth-left">
+    <div>
+      <div class="auth-brand">Capital Support</div>
+      <div class="auth-tagline">Customer Relationship Manager</div>
+    </div>
+    <div>
+      <div class="auth-quote">"A customer well-remembered is a relationship well-kept."</div>
+      <div class="auth-footer">© Capital Support · All rights reserved</div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="showTab('login')">Sign In</button>
+        <button class="auth-tab" id="tab-register" onclick="showTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="form-login">
+        <div class="field-group">
+          <label class="field-label">Email Address</label>
+          <input type="email" class="field-input" id="login-email" placeholder="you@example.com" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Password</label>
+          <input type="password" class="field-input" id="login-password" placeholder="••••••••" />
+        </div>
+        <button class="btn-primary" id="btn-login" onclick="handleLogin()">Sign In</button>
+        <div id="login-error" class="auth-error" style="display:none;"></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="form-register" style="display:none;">
+        <div class="field-group">
+          <label class="field-label">Email Address</label>
+          <input type="email" class="field-input" id="reg-email" placeholder="you@example.com" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Password</label>
+          <input type="password" class="field-input" id="reg-password" placeholder="At least 8 characters" />
+        </div>
+        <button class="btn-primary" id="btn-register" onclick="handleRegister()">Create Account</button>
+        <div id="reg-error" class="auth-error" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── APP SCREEN ─── -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="topbar-brand">Clientele</div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="topbar-email"></span>
+      <button class="btn-ghost" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Customers</div>
+        <div class="customer-count" id="customer-count">0</div>
+      </div>
+      <div class="sidebar-search">
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input type="text" class="search-input" id="search-input" placeholder="Search customers…" oninput="filterCustomers()" />
+        </div>
+      </div>
+      <div class="customer-list" id="customer-list"></div>
+      <button class="sidebar-add-btn" onclick="openAddModal()">
+        <span>+</span> Add Customer
+      </button>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <div class="detail-panel" id="detail-panel">
+      <div class="detail-placeholder">
+        <div class="detail-placeholder-icon">◈</div>
+        <div class="detail-placeholder-title">Select a customer</div>
+        <div class="detail-placeholder-sub">Choose from the list to view details</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── ADD/EDIT MODAL ─── -->
+<div class="modal-overlay" id="customer-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">New Customer</div>
+      <button class="modal-close" onclick="closeModal('customer-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="field-group">
+          <label class="field-label">Full Name *</label>
+          <input type="text" class="field-input" id="f-name" placeholder="Jane Smith" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Phone Number</label>
+          <input type="text" class="field-input" id="f-phone" placeholder="+1 555 000 0000" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Address</label>
+          <input type="text" class="field-input" id="f-address" placeholder="123 Main St, City" />
+        </div>
+        <div class="field-group full">
+          <label class="field-label">Notes</label>
+          <textarea class="field-input" id="f-notes" placeholder="Any important notes about this customer…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('customer-modal')">Cancel</button>
+      <button class="btn-save" id="btn-save" onclick="handleSave()">Save Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CONFIRM DELETE MODAL ─── -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal confirm-modal">
+    <div class="modal-header">
+      <div class="modal-title">Remove Customer</div>
+      <button class="modal-close" onclick="closeModal('confirm-modal')">✕</button>
+    </div>
+    <div class="confirm-body">
+      <div class="confirm-msg">Are you sure?</div>
+      <div class="confirm-sub" id="confirm-sub">This will permanently remove the customer and all associated data.</div>
+    </div>
+    <div class="confirm-footer">
+      <button class="btn-cancel" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn-confirm-delete" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────────────────
+const API = window.location.origin; // Works for both local and production
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let token = localStorage.getItem('token') || null;
+let userEmail = localStorage.getItem('userEmail') || '';
+let customers = [];
+let selectedId = null;
+let editingId = null;
+let deleteTargetId = null;
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+(async () => {
+  if (token) {
+    showApp();
+    await loadCustomers();
+  }
+})();
+
+// ─── AUTH TAB ────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('reg-error').style.display = 'none';
+}
+
+// ─── LOGIN ───────────────────────────────────────────────────────────────────
+async function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  const btn = document.getElementById('btn-login');
+  if (!email || !password) { showAuthError(errEl, 'Please fill in all fields.'); return; }
+
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+
+  try {
+    const form = new URLSearchParams();
+    form.append('username', email);
+    form.append('password', password);
+
+    const res = await fetch(`${API}/auth/jwt/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: form,
+    });
+
+    if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.detail || 'Invalid credentials'); }
+    const data = await res.json();
+    token = data.access_token;
+    userEmail = email;
+    localStorage.setItem('token', token);
+    localStorage.setItem('userEmail', userEmail);
+    showApp();
+    await loadCustomers();
+  } catch (e) {
+    showAuthError(errEl, e.message);
+  } finally {
+    btn.textContent = 'Sign In';
+    btn.disabled = false;
+  }
+}
+
+// ─── REGISTER ────────────────────────────────────────────────────────────────
+async function handleRegister() {
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const errEl = document.getElementById('reg-error');
+  const btn = document.getElementById('btn-register');
+  if (!email || !password) { showAuthError(errEl, 'Please fill in all fields.'); return; }
+
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+
+  try {
+    const res = await fetch(`${API}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.detail || 'Registration failed'); }
+    toast('Account created! Please sign in.', 'success');
+    showTab('login');
+    document.getElementById('login-email').value = email;
+  } catch (e) {
+    showAuthError(errEl, e.message);
+  } finally {
+    btn.textContent = 'Create Account';
+    btn.disabled = false;
+  }
+}
+
+function showAuthError(el, msg) {
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// ─── LOGOUT ──────────────────────────────────────────────────────────────────
+function handleLogout() {
+  token = null;
+  userEmail = '';
+  localStorage.removeItem('token');
+  localStorage.removeItem('userEmail');
+  customers = [];
+  selectedId = null;
+  document.getElementById('app-screen').classList.remove('visible');
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+// ─── SHOW APP ────────────────────────────────────────────────────────────────
+function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-screen').classList.add('visible');
+  document.getElementById('topbar-email').textContent = userEmail;
+}
+
+// ─── API HELPERS ─────────────────────────────────────────────────────────────
+async function apiFetch(path, opts = {}) {
+  const res = await fetch(`${API}${path}`, {
+    ...opts,
+    headers: {
+      ...(opts.headers || {}),
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    },
+  });
+  if (res.status === 401) { handleLogout(); throw new Error('Session expired'); }
+  return res;
+}
+
+// ─── LOAD CUSTOMERS ───────────────────────────────────────────────────────────
+async function loadCustomers() {
+  setLoading(true);
+  try {
+    const res = await apiFetch('/customers');
+    if (!res.ok) throw new Error('Failed to load customers');
+    customers = await res.json();
+    renderList();
+    if (selectedId) {
+      const still = customers.find(c => c.id === selectedId);
+      if (still) renderDetail(still);
+      else { selectedId = null; showDetailPlaceholder(); }
+    }
+    updateCount();
+  } catch (e) {
+    toast(e.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ─── RENDER LIST ──────────────────────────────────────────────────────────────
+function renderList(list = null) {
+  const query = document.getElementById('search-input').value.toLowerCase();
+  const items = (list || customers).filter(c =>
+    c.name.toLowerCase().includes(query) ||
+    (c.phone || '').toLowerCase().includes(query) ||
+    (c.address || '').toLowerCase().includes(query)
+  );
+
+  const el = document.getElementById('customer-list');
+
+  if (items.length === 0) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">◈</div>
+        <div class="empty-state-title">${query ? 'No results' : 'No customers yet'}</div>
+        <div class="empty-state-sub">${query ? 'Try a different search' : 'Add your first customer below'}</div>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = items.map(c => `
+    <div class="customer-item ${c.id === selectedId ? 'active' : ''}" onclick="selectCustomer('${c.id}')">
+      <div class="customer-avatar">${c.name.charAt(0).toUpperCase()}</div>
+      <div class="customer-item-info">
+        <div class="customer-item-name">${esc(c.name)}</div>
+        <div class="customer-item-meta">${esc(c.phone || c.address || 'No contact info')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCustomers() { renderList(); }
+
+function updateCount() {
+  document.getElementById('customer-count').textContent = customers.length;
+}
+
+// ─── SELECT CUSTOMER ──────────────────────────────────────────────────────────
+function selectCustomer(id) {
+  selectedId = id;
+  const c = customers.find(x => x.id === id);
+  if (c) renderDetail(c);
+  renderList();
+}
+
+function renderDetail(c) {
+  const since = new Date(c.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('detail-panel').innerHTML = `
+    <div class="detail-header">
+      <div class="detail-avatar">${c.name.charAt(0).toUpperCase()}</div>
+      <div class="detail-name-wrap">
+        <div class="detail-name">${esc(c.name)}</div>
+        <div class="detail-since">Customer since ${since}</div>
+      </div>
+      <div class="detail-actions">
+        <button class="btn-edit" onclick="openEditModal('${c.id}')">Edit</button>
+        <button class="btn-delete" onclick="openDeleteConfirm('${c.id}', '${esc(c.name)}')">Delete</button>
+      </div>
+    </div>
+    <div class="detail-fields">
+      <div class="detail-field">
+        <div class="detail-field-label">Phone</div>
+        <div class="detail-field-value ${!c.phone ? 'empty' : ''}">${c.phone ? esc(c.phone) : 'Not provided'}</div>
+      </div>
+      <div class="detail-field">
+        <div class="detail-field-label">Address</div>
+        <div class="detail-field-value ${!c.address ? 'empty' : ''}">${c.address ? esc(c.address) : 'Not provided'}</div>
+      </div>
+    </div>
+    <div class="detail-notes-section">
+      <div class="detail-notes-label">Notes</div>
+      <div class="detail-notes-value ${!c.notes ? 'empty' : ''}">${c.notes ? esc(c.notes) : 'No notes added'}</div>
+    </div>
+  `;
+}
+
+function showDetailPlaceholder() {
+  document.getElementById('detail-panel').innerHTML = `
+    <div class="detail-placeholder">
+      <div class="detail-placeholder-icon">◈</div>
+      <div class="detail-placeholder-title">Select a customer</div>
+      <div class="detail-placeholder-sub">Choose from the list to view details</div>
+    </div>`;
+}
+
+// ─── ADD MODAL ────────────────────────────────────────────────────────────────
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'New Customer';
+  document.getElementById('btn-save').textContent = 'Save Customer';
+  clearForm();
+  openModal('customer-modal');
+}
+
+function openEditModal(id) {
+  editingId = id;
+  const c = customers.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('modal-title').textContent = 'Edit Customer';
+  document.getElementById('btn-save').textContent = 'Update Customer';
+  document.getElementById('f-name').value = c.name || '';
+  document.getElementById('f-phone').value = c.phone || '';
+  document.getElementById('f-address').value = c.address || '';
+  document.getElementById('f-notes').value = c.notes || '';
+  openModal('customer-modal');
+}
+
+function clearForm() {
+  ['f-name','f-phone','f-address','f-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+// ─── SAVE ────────────────────────────────────────────────────────────────────
+async function handleSave() {
+  const name = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const address = document.getElementById('f-address').value.trim();
+  const notes = document.getElementById('f-notes').value.trim();
+
+  if (!name) { toast('Name is required', 'error'); return; }
+
+  const btn = document.getElementById('btn-save');
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+
+  try {
+    const params = new URLSearchParams({ name });
+    if (phone) params.append('phone', phone);
+    if (address) params.append('address', address);
+    if (notes) params.append('notes', notes);
+
+    let res;
+    if (editingId) {
+      res = await apiFetch(`/customers/${editingId}?${params}`, { method: 'PUT' });
+    } else {
+      res = await apiFetch(`/customers?${params}`, { method: 'POST' });
+    }
+
+    if (!res.ok) throw new Error('Failed to save customer');
+    const saved = await res.json();
+    closeModal('customer-modal');
+    await loadCustomers();
+    selectCustomer(saved.id);
+    toast(editingId ? 'Customer updated!' : 'Customer added!', 'success');
+  } catch (e) {
+    toast(e.message, 'error');
+  } finally {
+    btn.textContent = editingId ? 'Update Customer' : 'Save Customer';
+    btn.disabled = false;
+  }
+}
+
+// ─── DELETE ───────────────────────────────────────────────────────────────────
+function openDeleteConfirm(id, name) {
+  deleteTargetId = id;
+  document.getElementById('confirm-sub').textContent = `This will permanently remove "${name}" and all associated data.`;
+  openModal('confirm-modal');
+}
+
+async function confirmDelete() {
+  if (!deleteTargetId) return;
+  setLoading(true);
+  try {
+    const res = await apiFetch(`/customers/${deleteTargetId}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete customer');
+    closeModal('confirm-modal');
+    customers = customers.filter(c => c.id !== deleteTargetId);
+    if (selectedId === deleteTargetId) { selectedId = null; showDetailPlaceholder(); }
+    deleteTargetId = null;
+    renderList();
+    updateCount();
+    toast('Customer removed.', 'success');
+  } catch (e) {
+    toast(e.message, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ─── MODALS ───────────────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  }
+  if ((e.key === 'Enter') && document.getElementById('login-email') === document.activeElement ||
+      document.getElementById('login-password') === document.activeElement) {
+    handleLogin();
+  }
+});
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<div class="toast-dot"></div><span>${esc(msg)}</span>`;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ─── LOADING ──────────────────────────────────────────────────────────────────
+function setLoading(on) {
+  const bar = document.getElementById('loading-bar');
+  bar.style.width = on ? '70%' : '100%';
+  if (!on) setTimeout(() => { bar.style.width = '0%'; }, 300);
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>

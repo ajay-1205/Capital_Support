@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: capital-support
+    runtime: python
+    pythonVersion: 3.12
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./capital_support.db
