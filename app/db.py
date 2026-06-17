@@ -1,6 +1,5 @@
 from collections.abc import AsyncGenerator
 import uuid
-import os
 from sqlalchemy import UUID
 from sqlalchemy import Column, String, Text, DateTime, ForeignKey
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
@@ -9,12 +8,8 @@ from datetime import datetime
 from fastapi_users.db import SQLAlchemyUserDatabase, SQLAlchemyBaseUserTableUUID
 from fastapi import Depends
 
-# Use environment variable for database, fallback to SQLite
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./test.db")
-
-# If using PostgreSQL, convert the URL format
-if "postgresql" in DATABASE_URL:
-    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
+# Use SQLite with aiosqlite (simple, works on Render free tier)
+DATABASE_URL = "sqlite+aiosqlite:///./capital_support.db"
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 async_session = async_sessionmaker(engine, expire_on_commit=False)
